@@ -1,0 +1,35 @@
+= Project to demonstrate Hibernate schema auto generation where the custom PostgreSQL type `INET` is used
+
+== Prerequisites
+
+* A PostgreSQL database is required to run this project. The connection data can be eddited in `src/main/resources/application.yaml`.
++
+The existing connection data is for a database running on `localhost:5432` called `postgres` with same username and password.
+* JDK 8 to run the app
+
+== Build project
+[source,sh]
+$ ./mvnw clean install
+
+or (if you have maven 3 installed locally)
+
+[source,sh]
+$ mvn clean install
+
+== Run the project (will run ddl `create table `LAMP``)
+
+[source,sh]
+$ java -jar target/wrong-type-0.0.1-SNAPSHOT.jar
+
+The app only generates the schema and exits.
+
+== Results
+
+Instead of correctly guessing the type for column `inet_address` to be `INET`, Hibernate decides that it has type `UUID` when running the DDL.
+
+== Solution
+
+As pointed out in this https://stackoverflow.com/a/51037478/1864720[SO answer], the `INET` valued property needs to be additionally
+annotated with
+[source,java]
+@Column(columnDefinition = "inet")
